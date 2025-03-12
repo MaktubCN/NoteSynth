@@ -16,6 +16,10 @@ export function useRecording() {
 
   useEffect(() => {
     recordingService.current = new RecordingService();
+    
+    return () => {
+      recordingService.current?.stop();
+    };
   }, []);
 
   const startRecording = async () => {
@@ -32,8 +36,13 @@ export function useRecording() {
           apiKey: settings.apiKey,
           inputLanguage: settings.inputLanguage,
           transcriptionModel: settings.transcriptionModel,
+          recordingInterval: settings.recordingInterval,
         },
-        (text) => addTranscription(currentConversationId, text),
+        (text) => {
+          if (text && text.trim()) {
+            addTranscription(currentConversationId, text);
+          }
+        },
         (duration) => updateRecordingDuration(duration)
       );
       startRecordingStore();
@@ -47,12 +56,6 @@ export function useRecording() {
     recordingService.current?.stop();
     stopRecordingStore();
   };
-
-  useEffect(() => {
-    return () => {
-      recordingService.current?.stop();
-    };
-  }, []);
 
   return { startRecording, stopRecording };
 } 

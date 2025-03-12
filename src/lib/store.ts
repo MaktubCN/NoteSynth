@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
 import { Conversation, Settings } from '@/types';
+import { ApiService } from './api';
 
 interface AppState {
   conversations: Conversation[];
@@ -10,6 +11,7 @@ interface AppState {
   isRecording: boolean;
   isProcessing: boolean;
   recordingDuration: number;
+  transcriptionBuffer: string;
   
   // 对话管理
   createConversation: () => string;
@@ -27,6 +29,9 @@ interface AppState {
   // 内容管理
   addTranscription: (id: string, text: string) => void;
   updateSummary: (id: string, summary: string) => void;
+  clearTranscriptionBuffer: () => void;
+  generateManualSummary: () => Promise<void>;
+  exportSummary: (id: string) => void;
   
   // 录音相关方法
   startRecording: () => void;
@@ -55,6 +60,7 @@ export const useAppStore = create<AppState>()(
       isRecording: false,
       isProcessing: false,
       recordingDuration: 0,
+      transcriptionBuffer: '',
       
       createConversation: () => {
         const id = uuidv4();
@@ -116,6 +122,7 @@ export const useAppStore = create<AppState>()(
       
       addTranscription: (id, text) => {
         set((state) => ({
+          transcriptionBuffer: state.transcriptionBuffer + (state.transcriptionBuffer ? '\n' : '') + text,
           conversations: state.conversations.map((conv) =>
             conv.id === id
               ? {
@@ -141,10 +148,50 @@ export const useAppStore = create<AppState>()(
       startRecording: () => set({ isRecording: true, recordingDuration: 0 }),
       stopRecording: () => set({ isRecording: false }),
       updateRecordingDuration: (duration) => set({ recordingDuration: duration }),
+      
+      clearTranscriptionBuffer: () => set({ transcriptionBuffer: '' }),
+      
+      generateManualSummary: async () => {
+        const { currentConversationId, conversations, settings, transcriptionBuffer } = get();
+        if (!currentConversationId || !settings.apiKey) return;
+
+        const conversation = conversations.find((conv) => conv.id === currentConversationId);
+        if (!conversation) return;
+
+        try {
+          const api = new ApiService(settings.apiBaseUrl, settings.apiKey);
+          const summary = await api.summarize(conversation.content, {
+            model: settings.summaryModel,
+            language: settings.summaryLanguage,
+          });
+          
+          if (summary) {
+            get().updateSummary(conversation.id, summary);
+            get().clearTranscriptionBuffer();
+          }
+        } catch (error) {
+          console.error('Failed to generate manual summary:', error);
+        }
+      },
+      
+      exportSummary: (id) => {
+        const conversation = get().conversations.find((conv) => conv.id === id);
+        if (!conversation?.summary) return;
+        
+        const blob = new Blob([conversation.summary], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${conversation.name}-summary.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      },
     }),
     {
       name: 'app-storage',
       partialize: (state) => ({ settings: state.settings }),
     }
   )
-); 
+);

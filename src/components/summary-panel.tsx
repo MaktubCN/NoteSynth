@@ -2,24 +2,55 @@
 
 import { useAppStore } from '@/lib/store';
 import { Markdown } from '@/components/ui/markdown';
+import { RefreshCw, FileDown } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { formatDuration } from '@/lib/utils';
 
 export function SummaryPanel() {
-  const { conversations, currentConversationId } = useAppStore();
+  const t = useTranslations();
+  const { conversations, currentConversationId, generateManualSummary, exportSummary, settings, isRecording } = useAppStore();
 
   const currentConversation = conversations.find(
     (conv) => conv.id === currentConversationId
   );
 
+  const nextSummaryTime = settings.summaryInterval * 60; // 转换为秒
+
   return (
     <div className="flex h-full flex-col p-4">
-      <h2 className="mb-4 text-lg font-semibold">Summary</h2>
+      <div className="mb-4">
+        <h2 className="mb-2 text-lg font-semibold">总结</h2>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={generateManualSummary}
+            className="inline-flex h-8 items-center gap-2 rounded-lg border px-3 text-sm hover:bg-accent"
+          >
+            <RefreshCw className="h-4 w-4" />
+            {t('summary.generate')}
+          </button>
+          {currentConversationId && (
+            <button
+              onClick={() => exportSummary(currentConversationId)}
+              className="inline-flex h-8 items-center gap-2 rounded-lg border px-3 text-sm hover:bg-accent"
+            >
+              <FileDown className="h-4 w-4" />
+              {t('summary.export')}
+            </button>
+          )}
+          {isRecording && (
+            <span className="text-sm text-muted-foreground">
+              下次自动总结: {formatDuration(nextSummaryTime)}s
+            </span>
+          )}
+        </div>
+      </div>
       <div className="flex-1 overflow-auto rounded-lg bg-muted/30 p-4">
         {currentConversation?.summary ? (
           <Markdown>{currentConversation.summary}</Markdown>
         ) : (
-          'No summary yet. Start recording to generate a summary...'
+          '暂无总结。开始录音以生成总结...'
         )}
       </div>
     </div>
   );
-} 
+}

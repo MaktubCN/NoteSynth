@@ -6,13 +6,14 @@ export const locales = ['en', 'zh'] as const;
 export const defaultLocale = 'en';
 
 export default getRequestConfig(async ({ locale }) => {
-  if (!locales.includes(locale as any)) {
-    notFound();
-  }
+  if (!locales.includes(locale as any)) notFound();
 
   return {
     locale,
-    messages: (await import(`../messages/${locale}.json`)).default,
+    messages: {
+      en: (await import('../messages/en.json')).default,
+      zh: (await import('../messages/zh.json')).default
+    },
     timeZone: 'Asia/Shanghai'
   };
-}); 
+});

@@ -35,5 +35,9 @@
   },
   "search": {
     "placeholder": "搜索对话..."
+  },
+  "summary": {
+    "generate": "生成总结",
+    "export": "导出总结"
   }
-} 
+}

@@ -35,5 +35,9 @@
   },
   "search": {
     "placeholder": "Search conversations..."
+  },
+  "summary": {
+    "generate": "Generate Summary",
+    "export": "Export Summary"
   }
-} 
+}

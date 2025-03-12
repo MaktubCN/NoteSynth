@@ -1,0 +1,39 @@
+{
+  "app": {
+    "title": "NoteSynth",
+    "newConversation": "新对话",
+    "noContent": "暂无内容。开始录音...",
+    "noSummary": "暂无总结。开始录音以生成总结..."
+  },
+  "settings": {
+    "title": "设置",
+    "apiBaseUrl": "API 基础 URL",
+    "apiKey": "API 密钥",
+    "inputLanguage": "输入语言",
+    "transcriptionModel": "转写模型",
+    "summaryLanguage": "总结语言",
+    "summaryModel": "总结模型",
+    "recordingInterval": "录音间隔（秒）",
+    "summaryInterval": "总结间隔（分钟）",
+    "interfaceLanguage": "界面语言",
+    "cancel": "取消",
+    "save": "保存更改"
+  },
+  "recording": {
+    "start": "开始录音",
+    "stop": "停止录音",
+    "duration": "{duration}秒"
+  },
+  "panels": {
+    "transcription": "转写",
+    "summary": "总结"
+  },
+  "languages": {
+    "auto": "自动检测",
+    "en": "英文",
+    "zh": "中文"
+  },
+  "search": {
+    "placeholder": "搜索对话..."
+  }
+} 

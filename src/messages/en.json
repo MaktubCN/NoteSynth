@@ -1,0 +1,39 @@
+{
+  "app": {
+    "title": "NoteSynth",
+    "newConversation": "New Conversation",
+    "noContent": "No content yet. Start recording...",
+    "noSummary": "No summary yet. Start recording to generate a summary..."
+  },
+  "settings": {
+    "title": "Settings",
+    "apiBaseUrl": "API Base URL",
+    "apiKey": "API Key",
+    "inputLanguage": "Input Language",
+    "transcriptionModel": "Transcription Model",
+    "summaryLanguage": "Summary Language",
+    "summaryModel": "Summary Model",
+    "recordingInterval": "Recording Interval (s)",
+    "summaryInterval": "Summary Interval (min)",
+    "interfaceLanguage": "Interface Language",
+    "cancel": "Cancel",
+    "save": "Save Changes"
+  },
+  "recording": {
+    "start": "Start Recording",
+    "stop": "Stop Recording",
+    "duration": "{duration}s"
+  },
+  "panels": {
+    "transcription": "Transcription",
+    "summary": "Summary"
+  },
+  "languages": {
+    "auto": "Auto Detect",
+    "en": "English",
+    "zh": "Chinese"
+  },
+  "search": {
+    "placeholder": "Search conversations..."
+  }
+} 

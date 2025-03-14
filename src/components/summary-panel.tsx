@@ -3,13 +3,23 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from '@/lib/store';
 import { Markdown } from '@/components/ui/markdown';
-import { RefreshCw, FileDown } from 'lucide-react';
+import { RefreshCw, FileDown, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { formatDuration } from '@/lib/utils';
 
 export function SummaryPanel() {
   const t = useTranslations();
-  const { conversations, currentConversationId, generateManualSummary, exportSummary, settings, isRecording } = useAppStore();
+  const { 
+    conversations, 
+    currentConversationId, 
+    generateManualSummary, 
+    exportSummary, 
+    settings, 
+    isRecording,
+    previousSummaryVersion,
+    nextSummaryVersion,
+    deleteSummaryVersion
+  } = useAppStore();
   const [remainingTime, setRemainingTime] = useState(settings.summaryInterval * 60);
 
   const currentConversation = conversations.find(
@@ -39,6 +49,14 @@ export function SummaryPanel() {
     };
   }, [isRecording, settings.summaryInterval]);
 
+  // 获取当前版本信息
+  const hasSummaries = currentConversation?.summaries?.length > 0;
+  const currentVersionIndex = currentConversation?.currentSummaryIndex || -1;
+  const totalVersions = currentConversation?.summaries?.length || 0;
+  const currentSummaryId = hasSummaries && currentVersionIndex >= 0 
+    ? currentConversation?.summaries[currentVersionIndex]?.id 
+    : null;
+
   return (
     <div className="flex h-full flex-col p-4">
       <div className="mb-4 flex justify-between items-center">
@@ -62,6 +80,45 @@ export function SummaryPanel() {
           )}
         </div>
       </div>
+      
+      {/* 版本导航控件 */}
+      {hasSummaries && (
+        <div className="mb-4 flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => currentConversationId && previousSummaryVersion(currentConversationId)}
+              disabled={totalVersions <= 1}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border hover:bg-accent disabled:opacity-50"
+              title={t('summary.previousVersion')}
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <span className="text-sm text-muted-foreground">
+              {t('summary.versionInfo', { current: currentVersionIndex + 1, total: totalVersions })}
+            </span>
+            <button
+              onClick={() => currentConversationId && nextSummaryVersion(currentConversationId)}
+              disabled={totalVersions <= 1}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border hover:bg-accent disabled:opacity-50"
+              title={t('summary.nextVersion')}
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+          
+          {currentSummaryId && (
+            <button
+              onClick={() => currentConversationId && currentSummaryId && 
+                deleteSummaryVersion(currentConversationId, currentSummaryId)}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg border hover:bg-accent hover:text-destructive"
+              title={t('summary.deleteVersion')}
+            >
+              <Trash2 className="h-4 w-4" />
+            </button>
+          )}
+        </div>
+      )}
+      
       {isRecording && (
         <div className="mb-4">
           <span className="text-sm text-muted-foreground">

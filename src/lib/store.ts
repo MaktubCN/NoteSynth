@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { Conversation, Settings } from '@/types';
+import { Conversation, Settings, SummaryVersion } from '@/types';
 import { ApiService } from './api';
 
 interface AppState {
@@ -32,6 +32,12 @@ interface AppState {
   clearTranscriptionBuffer: () => void;
   generateManualSummary: () => Promise<void>;
   exportSummary: (id: string) => void;
+  
+  // 笔记版本管理
+  addSummaryVersion: (id: string, content: string) => void;
+  deleteSummaryVersion: (conversationId: string, summaryId: string) => void;
+  nextSummaryVersion: (id: string) => void;
+  previousSummaryVersion: (id: string) => void;
   
   // 录音相关方法
   startRecording: () => void;
@@ -74,6 +80,8 @@ export const useAppStore = create<AppState>()(persist(
             updatedAt: new Date().toISOString(),
             content: '',
             summary: '',
+            summaries: [],
+            currentSummaryIndex: -1,
             entries: [],
           };
           set({
@@ -91,7 +99,9 @@ export const useAppStore = create<AppState>()(persist(
           updatedAt: new Date().toISOString(),
           content: '',
           summary: '',
-          entries: [], // 添加这一行初始化 entries 数组
+          summaries: [],
+          currentSummaryIndex: -1,
+          entries: [],
         };
         
         set((state) => ({
@@ -173,6 +183,131 @@ export const useAppStore = create<AppState>()(persist(
         }));
       },
       
+      // 添加新的笔记版本
+      addSummaryVersion: (id, content) => {
+        const summaryId = uuidv4();
+        const newSummary: SummaryVersion = {
+          id: summaryId,
+          content,
+          createdAt: new Date().toISOString(),
+        };
+        
+        set((state) => {
+          const conversation = state.conversations.find(conv => conv.id === id);
+          if (!conversation) return state;
+          
+          // 确保summaries存在，如果不存在则初始化为空数组
+          const existingSummaries = conversation.summaries || [];
+          const updatedSummaries = [...existingSummaries, newSummary];
+          const newIndex = updatedSummaries.length - 1;
+          
+          return {
+            conversations: state.conversations.map(conv =>
+              conv.id === id
+                ? {
+                    ...conv,
+                    summaries: updatedSummaries,
+                    currentSummaryIndex: newIndex,
+                    summary: content, // 更新兼容字段
+                    updatedAt: new Date().toISOString(),
+                  }
+                : conv
+            ),
+          };
+        });
+      },
+      
+      // 删除笔记版本
+      deleteSummaryVersion: (conversationId, summaryId) => {
+        set((state) => {
+          const conversation = state.conversations.find(conv => conv.id === conversationId);
+          if (!conversation || conversation.summaries.length <= 1) return state;
+          
+          const currentIndex = conversation.currentSummaryIndex;
+          const summaryIndex = conversation.summaries.findIndex(s => s.id === summaryId);
+          if (summaryIndex === -1) return state;
+          
+          const updatedSummaries = conversation.summaries.filter(s => s.id !== summaryId);
+          let newIndex = currentIndex;
+          
+          // 调整当前索引
+          if (summaryIndex === currentIndex) {
+            // 如果删除的是当前显示的版本，显示前一个版本（如果有）
+            newIndex = Math.min(currentIndex, updatedSummaries.length - 1);
+          } else if (summaryIndex < currentIndex) {
+            // 如果删除的版本在当前版本之前，当前索引需要减1
+            newIndex = currentIndex - 1;
+          }
+          
+          // 获取新的当前摘要内容
+          const newSummaryContent = newIndex >= 0 && updatedSummaries.length > 0 
+            ? updatedSummaries[newIndex].content 
+            : '';
+          
+          return {
+            conversations: state.conversations.map(conv =>
+              conv.id === conversationId
+                ? {
+                    ...conv,
+                    summaries: updatedSummaries,
+                    currentSummaryIndex: newIndex,
+                    summary: newSummaryContent, // 更新兼容字段
+                    updatedAt: new Date().toISOString(),
+                  }
+                : conv
+            ),
+          };
+        });
+      },
+      
+      // 切换到下一个笔记版本
+      nextSummaryVersion: (id) => {
+        set((state) => {
+          const conversation = state.conversations.find(conv => conv.id === id);
+          if (!conversation || conversation.summaries.length <= 1) return state;
+          
+          const currentIndex = conversation.currentSummaryIndex;
+          const nextIndex = (currentIndex + 1) % conversation.summaries.length;
+          const nextSummary = conversation.summaries[nextIndex].content;
+          
+          return {
+            conversations: state.conversations.map(conv =>
+              conv.id === id
+                ? {
+                    ...conv,
+                    currentSummaryIndex: nextIndex,
+                    summary: nextSummary, // 更新兼容字段
+                  }
+                : conv
+            ),
+          };
+        });
+      },
+      
+      // 切换到上一个笔记版本
+      previousSummaryVersion: (id) => {
+        set((state) => {
+          const conversation = state.conversations.find(conv => conv.id === id);
+          if (!conversation || conversation.summaries.length <= 1) return state;
+          
+          const currentIndex = conversation.currentSummaryIndex;
+          const prevIndex = (currentIndex - 1 + conversation.summaries.length) % conversation.summaries.length;
+          const prevSummary = conversation.summaries[prevIndex].content;
+          
+          return {
+            conversations: state.conversations.map(conv =>
+              conv.id === id
+                ? {
+                    ...conv,
+                    currentSummaryIndex: prevIndex,
+                    summary: prevSummary, // 更新兼容字段
+                  }
+                : conv
+            ),
+          };
+        });
+      },
+      
       startRecording: () => set({ isRecording: true, recordingDuration: 0 }),
       stopRecording: () => set({ isRecording: false }),
       updateRecordingDuration: (duration) => set({ recordingDuration: duration }),
@@ -192,6 +327,7 @@ export const useAppStore = create<AppState>()(persist(
           get().updateSummary(conversation.id, '');
           
           const api = new ApiService(settings.apiBaseUrl, settings.apiKey);
+          let summaryContent = '';
           
           // 使用流式API
           await api.summarizeStream(
@@ -202,11 +338,14 @@ export const useAppStore = create<AppState>()(persist(
             },
             (chunk) => {
               // 每收到一个数据块，就更新摘要
+              summaryContent += chunk;
               const currentSummary = get().conversations.find(c => c.id === conversation.id)?.summary || '';
               get().updateSummary(conversation.id, currentSummary + chunk);
             }
           );
           
+          // 生成完成后，添加到版本历史
+          get().addSummaryVersion(conversation.id, summaryContent);
           get().clearTranscriptionBuffer();
         } catch (error) {
           console.error('Failed to generate manual summary:', error);

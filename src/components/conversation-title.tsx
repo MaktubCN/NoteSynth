@@ -58,7 +58,7 @@ export function ConversationTitle({ id, name }: ConversationTitleProps) {
       className="group flex w-full cursor-pointer items-center gap-2 text-sm outline-none"
     >
       <span className="flex-1 truncate text-left">{name}</span>
-      <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100" />
+      {/* <Pencil className="h-3 w-3 opacity-0 group-hover:opacity-100" /> */}
     </div>
   );
 } 

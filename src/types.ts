@@ -18,12 +18,20 @@ export interface TranscriptionEntry {
   content: string;
 }
 
+export interface SummaryVersion {
+  id: string;
+  content: string;
+  createdAt: string;
+}
+
 export interface Conversation {
   id: string;
   name: string;
   createdAt: string;
   updatedAt: string;
   content: string;
-  summary: string;
+  summary: string; // 保留向后兼容
+  summaries: SummaryVersion[];
+  currentSummaryIndex: number;
   entries: TranscriptionEntry[];
 }

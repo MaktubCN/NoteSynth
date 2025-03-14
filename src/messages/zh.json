@@ -41,7 +41,11 @@
     "generate": "生成笔记",
     "export": "导出笔记",
     "noContent": "暂无笔记内容",
-    "nextSummary": "下一次笔记倒计时"
+    "nextSummary": "下一次笔记倒计时",
+    "previousVersion": "上一版本",
+    "nextVersion": "下一版本",
+    "deleteVersion": "删除版本",
+    "versionInfo": "第 {current} 版，共 {total} 版"
   },
   "models": {
     "transcription": {

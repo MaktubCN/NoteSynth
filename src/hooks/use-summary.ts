@@ -12,6 +12,7 @@ export function useSummary() {
     conversations,
     isRecording,
     updateSummary,
+    addSummaryVersion,
   } = useAppStore();
 
   useEffect(() => {
@@ -50,6 +51,8 @@ export function useSummary() {
         // 先清空当前摘要，以便显示流式输出
         updateSummary(conversation.id, '');
         
+        let summaryContent = '';
+        
         // 使用流式API
         await api.summarizeStream(
           conversation.content, 
@@ -59,10 +62,14 @@ export function useSummary() {
           },
           (chunk) => {
             // 每收到一个数据块，就更新摘要
+            summaryContent += chunk;
             const currentSummary = conversations.find(c => c.id === conversation.id)?.summary || '';
             updateSummary(conversation.id, currentSummary + chunk);
           }
         );
+        
+        // 生成完成后，添加到版本历史
+        addSummaryVersion(conversation.id, summaryContent);
       } catch (error) {
         console.error('Failed to generate summary:', error);
       }
@@ -84,5 +91,6 @@ export function useSummary() {
     settings.summaryLanguage,
     conversations,
     updateSummary,
+    addSummaryVersion,
   ]);
 }

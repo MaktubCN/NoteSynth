@@ -37,11 +37,15 @@
   "search": {
     "placeholder": "Search conversations..."
   },
-  "note": {
+  "summary": {
     "generate": "Generate Note",
     "export": "Export Note",
     "noContent": "No note content yet",
-    "nextNote": "Next note in"
+    "nextSummary": "Next note in",
+    "previousVersion": "Previous Version",
+    "nextVersion": "Next Version",
+    "deleteVersion": "Delete Version",
+    "versionInfo": "Version {current} of {total}"
   },
   "models": {
     "transcription": {

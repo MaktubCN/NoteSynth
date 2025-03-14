@@ -41,5 +41,11 @@
     "generate": "生成总结",
     "export": "导出总结",
     "noContent": "暂无总结内容"
+  },
+  "models": {
+    "transcription": {
+      "whisper-1": "Whisper-1",
+      "whisper-large-v3-turbo": "Whisper Large V3 Turbo"
+    }
   }
 }

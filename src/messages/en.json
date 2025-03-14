@@ -41,5 +41,11 @@
     "generate": "Generate Summary",
     "export": "Export Summary",
     "noContent": "No summary content yet"
+  },
+  "models": {
+    "transcription": {
+      "whisper-1": "Whisper-1",
+      "whisper-large-v3-turbo": "Whisper Large V3 Turbo"
+    }
   }
 }

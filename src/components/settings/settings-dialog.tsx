@@ -1,15 +1,15 @@
 'use client';
 
 import * as React from 'react';
-import * as Dialog from '@radix-ui/react-dialog';
 import { Settings as SettingsIcon, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useAppStore } from '@/lib/store';
+import * as Dialog from '@radix-ui/react-dialog';
 
 export function SettingsDialog() {
+  const [open, setOpen] = React.useState(false); // Remove duplicate useState declaration
   const t = useTranslations();
   const { settings, updateSettings } = useAppStore();
-  const [open, setOpen] = React.useState(false);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,7 +97,8 @@ export function SettingsDialog() {
                   defaultValue={settings.transcriptionModel}
                   className="w-full rounded-md border bg-transparent px-3 py-2 text-sm"
                 >
-                  <option value="whisper-1">whisper-1</option>
+                  <option value="whisper-1">{t('models.transcription.whisper-1')}</option>
+                  <option value="whisper-large-v3-turbo">{t('models.transcription.whisper-large-v3-turbo')}</option>
                 </select>
               </fieldset>
               <fieldset>

@@ -43,7 +43,7 @@ const defaultSettings: Settings = {
   apiBaseUrl: 'https://api.openai.com',
   apiKey: '',
   inputLanguage: 'auto',
-  transcriptionModel: 'whisper-1',
+  transcriptionModel: 'whisper-1', // 保持默认使用 whisper-1
   summaryLanguage: 'en',
   summaryModel: 'gpt-4',
   recordingInterval: 30,
@@ -52,8 +52,7 @@ const defaultSettings: Settings = {
   showTimestamp: true,
 };
 
-export const useAppStore = create<AppState>()(
-  persist(
+export const useAppStore = create<AppState>()(persist(
     (set, get) => ({
       conversations: [],
       currentConversationId: null,
@@ -220,7 +219,7 @@ export const useAppStore = create<AppState>()(
     }),
     {
       name: 'app-storage',
-      partialize: (state) => ({ settings: state.settings }),
+      partialize: (state) => ({ settings: state.settings, conversations: state.conversations }),
       onRehydrateStorage: () => (state) => {
         if (state) {
           state._createDefaultConversation();

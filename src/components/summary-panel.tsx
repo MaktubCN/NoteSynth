@@ -46,7 +46,7 @@ export function SummaryPanel() {
           </span>
         </div>
       )}
-      <div className="flex-1 overflow-auto rounded-lg bg-background p-4">
+      <div className="flex-1 overflow-y-auto rounded-lg bg-background p-4">
         {currentConversation?.summary ? (
           <Markdown>{currentConversation.summary}</Markdown>
         ) : (

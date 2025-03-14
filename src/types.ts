@@ -1,8 +1,10 @@
+export type TranscriptionModel = 'whisper-1' | 'whisper-large-v3-turbo';
+
 export interface Settings {
   apiBaseUrl: string;
   apiKey: string;
   inputLanguage: string;
-  transcriptionModel: string;
+  transcriptionModel: TranscriptionModel;
   summaryLanguage: string;
   summaryModel: string;
   recordingInterval: number;

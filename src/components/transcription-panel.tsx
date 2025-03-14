@@ -27,7 +27,7 @@ export function TranscriptionPanel() {
       <h2 className="mb-4 text-lg font-semibold">{t('panels.transcription')}</h2>
       <div
         ref={scrollRef}
-        className="flex-1 overflow-auto rounded-lg bg-background p-4"
+        className="flex-1 overflow-auto rounded-lg bg-background p-4 max-h-[calc(100vh-12rem)]"
       >
         <table className="w-full border-collapse">
           <tbody>

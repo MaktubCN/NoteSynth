@@ -2,12 +2,14 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
 import { AudioControls } from '@/components/audio-controls';
 import { SettingsDialog } from '@/components/settings/settings-dialog';
 import { ConversationList } from '@/components/conversation-list';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { ThemeSwitcher } from '@/components/theme-switcher';
+import { TranscriptionPanel } from '@/components/transcription-panel';
+import { SummaryPanel } from '@/components/summary-panel';
 import { useAppStore } from '@/lib/store';
 import { useSummary } from '@/hooks/use-summary';
 import { cn } from '@/lib/utils';
@@ -64,32 +66,22 @@ export default function Home() {
           <div className="flex justify-between">
             <button
               onClick={createConversation}
-              className="inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm hover:bg-accent"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border ml-4 hover:bg-accent"
             >
-              {t('app.newConversation')}
+              <Plus className="h-5 w-5" />
             </button>
             <AudioControls />
           </div>
           <div className="grid flex-1 grid-cols-2 gap-4">
             <div className="flex flex-col gap-4 rounded-lg border p-4">
-              <h2 className="text-lg font-semibold">{t('panels.transcription')}</h2>
-              {currentConversation?.content ? (
-                <p className="whitespace-pre-wrap text-sm">{currentConversation.content}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t('app.noContent')}</p>
-              )}
+              <TranscriptionPanel />
             </div>
             <div className="flex flex-col gap-4 rounded-lg border p-4">
-              <h2 className="text-lg font-semibold">{t('panels.summary')}</h2>
-              {currentConversation?.summary ? (
-                <p className="whitespace-pre-wrap text-sm">{currentConversation.summary}</p>
-              ) : (
-                <p className="text-sm text-muted-foreground">{t('app.noSummary')}</p>
-              )}
+              <SummaryPanel />
             </div>
           </div>
         </div>
       </div>
     </main>
   );
-} 
+}

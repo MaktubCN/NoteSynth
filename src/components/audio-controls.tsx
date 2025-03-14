@@ -1,30 +1,29 @@
 'use client';
 
-import * as React from 'react';
-import { Mic, Square, FileDown, RefreshCw } from 'lucide-react';
-import { useTranslations } from 'next-intl';
+import { useEffect, useState } from 'react';
+import { Mic, Square } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
-import { formatDuration } from '@/lib/utils';
-import { useRecording } from '@/hooks/use-recording';
+import { useTranslations } from 'next-intl';
+import { useRecording } from '@/hooks/use-recording'; // 添加这一行
 
 export function AudioControls() {
   const t = useTranslations();
-  const { isRecording, recordingDuration, settings, currentConversationId, generateManualSummary, exportSummary } = useAppStore();
-  const { startRecording, stopRecording } = useRecording();
-
-  const handleStartRecording = async () => {
-    if (!settings.apiKey) {
-      alert('Please configure your API Key in settings first.');
-      return;
+  const { isRecording } = useAppStore();
+  const { startRecording, stopRecording } = useRecording(); // 使用 useRecording hook
+  
+  const toggleRecording = () => {
+    if (isRecording) {
+      stopRecording();
+    } else {
+      startRecording();
     }
-    await startRecording();
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex items-center gap-2 mr-4">
       <button
-        onClick={isRecording ? stopRecording : handleStartRecording}
-        className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-sm text-primary-foreground hover:bg-primary/90"
+        onClick={toggleRecording}
+        className="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm text-primary-foreground hover:bg-primary/90"
       >
         {isRecording ? (
           <>
@@ -38,29 +37,6 @@ export function AudioControls() {
           </>
         )}
       </button>
-      {isRecording && (
-        <div className="text-sm text-muted-foreground">
-          {t('recording.duration', { duration: formatDuration(recordingDuration) })}
-        </div>
-      )}
-      {currentConversationId && (
-        <>
-          <button
-            onClick={generateManualSummary}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm hover:bg-accent"
-          >
-            <RefreshCw className="h-4 w-4" />
-            {t('summary.generate')}
-          </button>
-          <button
-            onClick={() => exportSummary(currentConversationId)}
-            className="inline-flex h-10 items-center gap-2 rounded-lg border px-4 text-sm hover:bg-accent"
-          >
-            <FileDown className="h-4 w-4" />
-            {t('summary.export')}
-          </button>
-        </>
-      )}
     </div>
   );
 }

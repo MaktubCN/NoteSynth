@@ -16,6 +16,7 @@
     "recordingInterval": "Recording Interval (s)",
     "summaryInterval": "Summary Interval (min)",
     "interfaceLanguage": "Interface Language",
+    "showTimestamp": "Show Timestamp",
     "cancel": "Cancel",
     "save": "Save Changes"
   },
@@ -38,6 +39,7 @@
   },
   "summary": {
     "generate": "Generate Summary",
-    "export": "Export Summary"
+    "export": "Export Summary",
+    "noContent": "No summary content yet"
   }
 }

@@ -49,6 +49,7 @@ const defaultSettings: Settings = {
   recordingInterval: 30,
   summaryInterval: 5,
   interfaceLanguage: 'en',
+  showTimestamp: true,
 };
 
 export const useAppStore = create<AppState>()(
@@ -61,7 +62,27 @@ export const useAppStore = create<AppState>()(
       isProcessing: false,
       recordingDuration: 0,
       transcriptionBuffer: '',
-      
+
+      // 初始化时创建默认会话
+      _createDefaultConversation: () => {
+        const { conversations } = get();
+        if (conversations.length === 0) {
+          const id = uuidv4();
+          const newConversation: Conversation = {
+            id,
+            name: 'New Conversation',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            content: '',
+            summary: '',
+            entries: [],
+          };
+          set({
+            conversations: [newConversation],
+            currentConversationId: id,
+          });
+        }
+      },
       createConversation: () => {
         const id = uuidv4();
         const newConversation: Conversation = {
@@ -71,6 +92,7 @@ export const useAppStore = create<AppState>()(
           updatedAt: new Date().toISOString(),
           content: '',
           summary: '',
+          entries: [], // 添加这一行初始化 entries 数组
         };
         
         set((state) => ({
@@ -121,6 +143,12 @@ export const useAppStore = create<AppState>()(
       updateSettings: (settings) => set({ settings }),
       
       addTranscription: (id, text) => {
+        const timestamp = new Date().toISOString();
+        const entry: TranscriptionEntry = {
+          timestamp,
+          content: text
+        };
+        
         set((state) => ({
           transcriptionBuffer: state.transcriptionBuffer + (state.transcriptionBuffer ? '\n' : '') + text,
           conversations: state.conversations.map((conv) =>
@@ -128,7 +156,8 @@ export const useAppStore = create<AppState>()(
               ? {
                   ...conv,
                   content: conv.content ? `${conv.content}\n${text}` : text,
-                  updatedAt: new Date().toISOString(),
+                  entries: [...conv.entries, entry],
+                  updatedAt: timestamp,
                 }
               : conv
           ),
@@ -192,6 +221,11 @@ export const useAppStore = create<AppState>()(
     {
       name: 'app-storage',
       partialize: (state) => ({ settings: state.settings }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._createDefaultConversation();
+        }
+      },
     }
   )
 );

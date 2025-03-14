@@ -16,6 +16,7 @@
     "recordingInterval": "录音间隔（秒）",
     "summaryInterval": "总结间隔（分钟）",
     "interfaceLanguage": "界面语言",
+    "showTimestamp": "显示时间戳",
     "cancel": "取消",
     "save": "保存更改"
   },
@@ -38,6 +39,7 @@
   },
   "summary": {
     "generate": "生成总结",
-    "export": "导出总结"
+    "export": "导出总结",
+    "noContent": "暂无总结内容"
   }
 }

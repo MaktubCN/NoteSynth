@@ -8,6 +8,12 @@ export interface Settings {
   recordingInterval: number;
   summaryInterval: number;
   interfaceLanguage: string;
+  showTimestamp: boolean;
+}
+
+export interface TranscriptionEntry {
+  timestamp: string;
+  content: string;
 }
 
 export interface Conversation {
@@ -17,4 +23,5 @@ export interface Conversation {
   updatedAt: string;
   content: string;
   summary: string;
-} 
+  entries: TranscriptionEntry[];
+}

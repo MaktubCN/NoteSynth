@@ -18,8 +18,8 @@ export function SummaryPanel() {
 
   return (
     <div className="flex h-full flex-col p-4">
-      <div className="mb-4">
-        <h2 className="mb-2 text-lg font-semibold">总结</h2>
+      <div className="mb-4 flex justify-between items-center">
+        <h2 className="text-lg font-semibold">{t('panels.summary')}</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={generateManualSummary}
@@ -37,18 +37,20 @@ export function SummaryPanel() {
               {t('summary.export')}
             </button>
           )}
-          {isRecording && (
-            <span className="text-sm text-muted-foreground">
-              下次自动总结: {formatDuration(nextSummaryTime)}s
-            </span>
-          )}
         </div>
       </div>
-      <div className="flex-1 overflow-auto rounded-lg bg-muted/30 p-4">
+      {isRecording && (
+        <div className="mb-4">
+          <span className="text-sm text-muted-foreground">
+            下次自动总结: {formatDuration(nextSummaryTime)}s
+          </span>
+        </div>
+      )}
+      <div className="flex-1 overflow-auto rounded-lg bg-background p-4">
         {currentConversation?.summary ? (
           <Markdown>{currentConversation.summary}</Markdown>
         ) : (
-          '暂无总结。开始录音以生成总结...'
+          t('summary.noContent')
         )}
       </div>
     </div>

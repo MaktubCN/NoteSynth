@@ -24,6 +24,7 @@ export function SettingsDialog() {
       recordingInterval: Number(formData.get('recordingInterval')),
       summaryInterval: Number(formData.get('summaryInterval')),
       interfaceLanguage: formData.get('interfaceLanguage') as string,
+      showTimestamp: formData.get('showTimestamp') === 'on',
     });
     setOpen(false);
   };
@@ -172,6 +173,18 @@ export function SettingsDialog() {
                 <option value="zh">{t('languages.zh')}</option>
               </select>
             </fieldset>
+            <fieldset className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="showTimestamp"
+                name="showTimestamp"
+                defaultChecked={settings.showTimestamp}
+                className="h-4 w-4 rounded border-gray-300"
+              />
+              <label htmlFor="showTimestamp" className="text-sm font-medium">
+                {t('settings.showTimestamp')}
+              </label>
+            </fieldset>
             <div className="mt-6 flex justify-end gap-4">
               <Dialog.Close asChild>
                 <button
@@ -201,4 +214,4 @@ export function SettingsDialog() {
       </Dialog.Portal>
     </Dialog.Root>
   );
-} 
+}

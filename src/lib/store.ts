@@ -187,18 +187,31 @@ export const useAppStore = create<AppState>()(persist(
         if (!conversation) return;
 
         try {
-          const api = new ApiService(settings.apiBaseUrl, settings.apiKey);
-          const summary = await api.summarize(conversation.content, {
-            model: settings.summaryModel,
-            language: settings.summaryLanguage,
-          });
+          set({ isProcessing: true });
+          // 先清空当前摘要，以便显示流式输出
+          get().updateSummary(conversation.id, '');
           
-          if (summary) {
-            get().updateSummary(conversation.id, summary);
-            get().clearTranscriptionBuffer();
-          }
+          const api = new ApiService(settings.apiBaseUrl, settings.apiKey);
+          
+          // 使用流式API
+          await api.summarizeStream(
+            conversation.content, 
+            {
+              model: settings.summaryModel,
+              language: settings.summaryLanguage,
+            },
+            (chunk) => {
+              // 每收到一个数据块，就更新摘要
+              const currentSummary = get().conversations.find(c => c.id === conversation.id)?.summary || '';
+              get().updateSummary(conversation.id, currentSummary + chunk);
+            }
+          );
+          
+          get().clearTranscriptionBuffer();
         } catch (error) {
           console.error('Failed to generate manual summary:', error);
+        } finally {
+          set({ isProcessing: false });
         }
       },
       

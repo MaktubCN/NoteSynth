@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useAppStore } from '@/lib/store';
 import { Markdown } from '@/components/ui/markdown';
 import { RefreshCw, FileDown } from 'lucide-react';
@@ -9,12 +10,34 @@ import { formatDuration } from '@/lib/utils';
 export function SummaryPanel() {
   const t = useTranslations();
   const { conversations, currentConversationId, generateManualSummary, exportSummary, settings, isRecording } = useAppStore();
+  const [remainingTime, setRemainingTime] = useState(settings.summaryInterval * 60);
 
   const currentConversation = conversations.find(
     (conv) => conv.id === currentConversationId
   );
 
-  const nextSummaryTime = settings.summaryInterval * 60; // 转换为秒
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isRecording) {
+      setRemainingTime(settings.summaryInterval * 60);
+      timer = setInterval(() => {
+        setRemainingTime((prevTime) => {
+          if (prevTime <= 1) {
+            // 重置计时器
+            return settings.summaryInterval * 60;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    }
+
+    return () => {
+      if (timer) {
+        clearInterval(timer);
+      }
+    };
+  }, [isRecording, settings.summaryInterval]);
 
   return (
     <div className="flex h-full flex-col p-4">
@@ -42,7 +65,7 @@ export function SummaryPanel() {
       {isRecording && (
         <div className="mb-4">
           <span className="text-sm text-muted-foreground">
-            下次自动总结: {formatDuration(nextSummaryTime)}s
+            {t('summary.nextSummary')}: {formatDuration(remainingTime)}s
           </span>
         </div>
       )}

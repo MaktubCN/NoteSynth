@@ -3,7 +3,7 @@
     "title": "NoteSynth",
     "newConversation": "新对话",
     "noContent": "暂无内容。开始录音...",
-    "noSummary": "暂无总结。开始录音以生成总结..."
+    "noSummary": "暂无笔记。开始录音以生成笔记..."
   },
   "settings": {
     "title": "设置",
@@ -11,10 +11,10 @@
     "apiKey": "API 密钥",
     "inputLanguage": "输入语言",
     "transcriptionModel": "转写模型",
-    "summaryLanguage": "总结语言",
-    "summaryModel": "总结模型",
+    "summaryLanguage": "笔记语言",
+    "summaryModel": "笔记模型",
     "recordingInterval": "录音间隔（秒）",
-    "summaryInterval": "总结间隔（分钟）",
+    "summaryInterval": "笔记间隔（分钟）",
     "interfaceLanguage": "界面语言",
     "showTimestamp": "显示时间戳",
     "cancel": "取消",
@@ -27,7 +27,7 @@
   },
   "panels": {
     "transcription": "转写",
-    "summary": "总结"
+    "summary": "笔记"
   },
   "languages": {
     "auto": "自动检测",
@@ -38,9 +38,10 @@
     "placeholder": "搜索对话..."
   },
   "summary": {
-    "generate": "生成总结",
-    "export": "导出总结",
-    "noContent": "暂无总结内容"
+    "generate": "生成笔记",
+    "export": "导出笔记",
+    "noContent": "暂无笔记内容",
+    "nextSummary": "下一次笔记倒计时"
   },
   "models": {
     "transcription": {

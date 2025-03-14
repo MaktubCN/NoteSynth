@@ -3,7 +3,7 @@
     "title": "NoteSynth",
     "newConversation": "New Conversation",
     "noContent": "No content yet. Start recording...",
-    "noSummary": "No summary yet. Start recording to generate a summary..."
+    "noNote": "No note yet. Start recording to generate a note..."
   },
   "settings": {
     "title": "Settings",
@@ -11,10 +11,10 @@
     "apiKey": "API Key",
     "inputLanguage": "Input Language",
     "transcriptionModel": "Transcription Model",
-    "summaryLanguage": "Summary Language",
-    "summaryModel": "Summary Model",
+    "noteLanguage": "Note Language",
+    "noteModel": "Note Model",
     "recordingInterval": "Recording Interval (s)",
-    "summaryInterval": "Summary Interval (min)",
+    "noteInterval": "Note Interval (min)",
     "interfaceLanguage": "Interface Language",
     "showTimestamp": "Show Timestamp",
     "cancel": "Cancel",
@@ -27,7 +27,7 @@
   },
   "panels": {
     "transcription": "Transcription",
-    "summary": "Summary"
+    "note": "Note"
   },
   "languages": {
     "auto": "Auto Detect",
@@ -37,10 +37,11 @@
   "search": {
     "placeholder": "Search conversations..."
   },
-  "summary": {
-    "generate": "Generate Summary",
-    "export": "Export Summary",
-    "noContent": "No summary content yet"
+  "note": {
+    "generate": "Generate Note",
+    "export": "Export Note",
+    "noContent": "No note content yet",
+    "nextNote": "Next note in"
   },
   "models": {
     "transcription": {

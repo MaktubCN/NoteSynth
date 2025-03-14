@@ -47,14 +47,22 @@ export function useSummary() {
       }
 
       try {
-        const summary = await api.summarize(conversation.content, {
-          model: settings.summaryModel,
-          language: settings.summaryLanguage,
-        });
+        // 先清空当前摘要，以便显示流式输出
+        updateSummary(conversation.id, '');
         
-        if (summary) {
-          updateSummary(conversation.id, summary);
-        }
+        // 使用流式API
+        await api.summarizeStream(
+          conversation.content, 
+          {
+            model: settings.summaryModel,
+            language: settings.summaryLanguage,
+          },
+          (chunk) => {
+            // 每收到一个数据块，就更新摘要
+            const currentSummary = conversations.find(c => c.id === conversation.id)?.summary || '';
+            updateSummary(conversation.id, currentSummary + chunk);
+          }
+        );
       } catch (error) {
         console.error('Failed to generate summary:', error);
       }
@@ -77,4 +85,4 @@ export function useSummary() {
     conversations,
     updateSummary,
   ]);
-} 
+}

@@ -30,11 +30,13 @@ export class SummaryService {
             messages: [
               {
                 role: 'system',
-                content: `You are a helpful assistant that summarizes transcribed speech. The summary should be concise and in ${settings.summaryLanguage} language. Focus on the key points and main ideas.`,
+                content: `你是一个专业的笔记整理助手，请将以下转写内容整理成Markdown格式的笔记，使用多级标题结构，突出重点内容，保持层次分明。请使用${settings.summaryLanguage}语言。`,
               },
               {
                 role: 'user',
-                content: `Please summarize the following transcription:\n\n${transcription}`,
+                content: `请将以下转写内容整理成详尽的笔记格式：
+
+${transcription}`,
               },
             ],
           }),
@@ -58,4 +60,4 @@ export class SummaryService {
       this.intervalId = null;
     }
   }
-} 
+}

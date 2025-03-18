@@ -1,4 +1,4 @@
-export type TranscriptionModel = 'whisper-1' | 'whisper-large-v3-turbo';
+export type TranscriptionModel = 'whisper-1' | 'openai/whisper-large-v3-turbo';
 
 export interface Settings {
   apiBaseUrl: string;

@@ -50,7 +50,7 @@
   "models": {
     "transcription": {
       "whisper-1": "Whisper-1",
-      "whisper-large-v3-turbo": "Whisper Large V3 Turbo"
+      "openai/whisper-large-v3-turbo": "Whisper Large V3 Turbo"
     }
   }
 }

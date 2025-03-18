@@ -98,7 +98,7 @@ export function SettingsDialog() {
                   className="w-full rounded-md border bg-transparent px-3 py-2 text-sm"
                 >
                   <option value="whisper-1">{t('models.transcription.whisper-1')}</option>
-                  <option value="whisper-large-v3-turbo">{t('models.transcription.whisper-large-v3-turbo')}</option>
+                  <option value="openai/whisper-large-v3-turbo">{t('models.transcription.openai/whisper-large-v3-turbo')}</option>
                 </select>
               </fieldset>
               <fieldset>
@@ -126,7 +126,7 @@ export function SettingsDialog() {
                   className="w-full rounded-md border bg-transparent px-3 py-2 text-sm"
                 >
                   <option value="gpt-4">gpt-4o</option>
-                  <option value="gpt-3.5-turbo">gpt-4o-mini</option>
+                  <option value="gpt-4o-mini">gpt-4o-mini</option>
                 </select>
               </fieldset>
               <fieldset>

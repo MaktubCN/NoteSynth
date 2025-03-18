@@ -2,6 +2,8 @@
 
 NoteSynth is an automatic note-taking tool that helps you record and summarize your lectures and meetings. It features real-time audio recording, transcription, and AI-powered summarization.
 
+![NoteSynth](img/layout.jpg)
+
 ## Features
 
 - Real-time audio recording
